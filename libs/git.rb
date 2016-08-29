@@ -16,7 +16,11 @@ class MyGit
   end
 
   def set_origin(owner, repo)
-    @base.remote('origin').remove
+    begin
+      @base.remote('origin').remove
+    rescue StandardError => e
+      logger.error(e.message)
+    end
     @base.add_remote('origin', "git@github.com:#{owner}/#{repo}.git")
     @logger.info("added origin git@github.com:#{owner}/#{repo}.git")
   end
