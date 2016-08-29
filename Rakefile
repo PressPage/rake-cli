@@ -4,7 +4,7 @@ Dir.glob('libs/*.rb').each { |lib| require_relative lib }
 desc 'Update master branch, create tag and release.'
 task :after_release, [:path, :commit, :release] do |_t, args|
   Dir.chdir("../#{args[:path]}") do
-    logger = Logger.instance
+    logger = Logger.new(STDOUT)
     git = MyGit.new(Dir.pwd, logger)
     remote = :origin
     parsed_git_remote = git.base.remote(remote).url.split(/(.*):(.*)\/(.*)\.git/)
@@ -29,8 +29,10 @@ task :after_release, [:path, :commit, :release] do |_t, args|
       logger.info("#{args[:commit]} merged into #{branch} branch")
     end
     git.base.push(remote, branch, opts)
-    git.base.add_tag(args[:release])
-    git.base.push(remote, args[:release])
-    GithubApi.create_release(owner, repo, args[:release])
+    if (!(git.base.tags.include? args[:release]))
+      git.base.add_tag(args[:release])
+      git.base.push(remote, args[:release])
+      GithubApi.create_release(owner, repo, args[:release])
+    end
   end
 end
