@@ -19,7 +19,7 @@ class MyGit
     begin
       @base.remote('origin').remove
     rescue StandardError => e
-      logger.error(e.message)
+      @logger.error(e.message)
     end
     @base.add_remote('origin', "git@github.com:#{owner}/#{repo}.git")
     @logger.info("added origin git@github.com:#{owner}/#{repo}.git")
