@@ -8,6 +8,7 @@ task :after_release, [:owner, :path, :commit, :release] do |_t, args|
     git = MyGit.new(args[:owner], Dir.pwd, logger)
     branch = :master
     opts = {}
+    updated = false
 
     git.base.checkout(branch)
     git.base.fetch('origin', {:tags => 1, :prune => 1})
@@ -23,9 +24,10 @@ task :after_release, [:owner, :path, :commit, :release] do |_t, args|
     else
       git.base.merge(args[:commit])
       logger.info("#{args[:commit]} merged into #{branch} branch")
+      updated = true
     end
     git.base.push('origin', branch, opts)
-    if (!(git.base.tags.include? args[:release]))
+    if (updated)
       git.base.add_tag(args[:release])
       git.base.push('origin', args[:release])
       GithubApi.create_release(args[:owner], args[:path], args[:release])
