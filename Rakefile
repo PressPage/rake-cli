@@ -27,7 +27,7 @@ task :after_release, [:owner, :path, :commit, :release] do |_t, args|
       updated = true
     end
     git.base.push('origin', branch, opts)
-    if (updated)
+    if (updated == true)
       git.base.add_tag(args[:release])
       git.base.push('origin', args[:release])
       GithubApi.create_release(args[:owner], args[:path], args[:release])
