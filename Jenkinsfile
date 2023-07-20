@@ -5,7 +5,7 @@ pipeline {
             agent any
             steps {
                 script {
-                def BRANCH = 'master'
+                def BRANCH = 'master-jenkins'
                     checkout scmGit(
                        branches: [[name: "$BRANCH"]],
                        extensions: [
